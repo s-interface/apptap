@@ -1,22 +1,22 @@
-package fu.berlin.apptap;
+package fu.berlin.apptap.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
+import fu.berlin.apptap.database.AppTabDbSchema.EventsTable;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME="events.db";
-    static final String TITLE="title";
-    static final String VALUE="value";
+public class AppTapDatabaseHelper extends SQLiteOpenHelper {
+    private static final int VERSION = 1;
+    private static final String DATABASE_NAME = "events.db";
 
     /**
      * Create a helper object to create, open, and/or manage a database.
      *
      * @param context to use for locating paths to the the database
      */
-    public DatabaseHelper(Context context) {
+    public AppTapDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -28,7 +28,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        db.execSQL("create table " + EventsTable.NAME + "(" +
+                " _id integer primary key autoincrement, " +
+//                EventsTable.Cols.UUID + ", " +
+                EventsTable.Cols.APPID + ", " +
+                EventsTable.Cols.TIME + ", " +
+                EventsTable.Cols.NAME + ", " +
+                EventsTable.Cols.ORIGIN + ", " +
+                EventsTable.Cols.PARAMS +
+                ")"
+        );
     }
 
     /**
@@ -54,5 +63,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public static Cursor queryEvents(Context context, String whereClause, String[] whereArgs) {
+        SQLiteDatabase database = new AppTapDatabaseHelper(context.getApplicationContext()).getReadableDatabase();
+        Cursor cursor = database.query(
+                EventsTable.NAME,
+                null, // columns - null selects all columns
+                whereClause,
+                whereArgs,
+                null, // groupBy
+                null, // having
+                null // orderBy
+        );
+
+        return cursor;
     }
 }
