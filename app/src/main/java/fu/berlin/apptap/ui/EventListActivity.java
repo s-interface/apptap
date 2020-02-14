@@ -1,4 +1,4 @@
-package fu.berlin.apptap;
+package fu.berlin.apptap.ui;
 
 import android.os.Bundle;
 
@@ -7,12 +7,14 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import fu.berlin.apptap.R;
+import fu.berlin.apptap.ui.dummy.DummyContent;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class EventListActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,5 +53,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
     }
 }
