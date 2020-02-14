@@ -1,7 +1,7 @@
-package fu.berlin.apptap.database;
+package fu.berlin.apptap.data;
 
 public class AppTabDbSchema {
-    public static final class EventsTable {
+    public static final class EventTable {
         public static final String NAME = "events";
 
         public static final class Cols {

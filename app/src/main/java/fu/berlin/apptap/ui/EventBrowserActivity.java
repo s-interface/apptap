@@ -8,18 +8,20 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import fu.berlin.apptap.R;
-import fu.berlin.apptap.ui.dummy.DummyContent;
+import fu.berlin.apptap.model.Event;
+import fu.berlin.apptap.model.EventStash;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class EventListActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
+public class EventBrowserActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_event_browser);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -27,7 +29,8 @@ public class EventListActivity extends AppCompatActivity implements EventFragmen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                String countString = String.valueOf(EventStash.getInstance(EventBrowserActivity.this).getEventsCount());
+                Snackbar.make(view, "count: " + countString, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -56,7 +59,8 @@ public class EventListActivity extends AppCompatActivity implements EventFragmen
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
+    public void onListFragmentInteraction(Event event) {
+        Toast toast = Toast.makeText(this, "click: " + event.getName(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

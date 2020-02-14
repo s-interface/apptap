@@ -10,11 +10,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import fu.berlin.apptap.database.AppTabDbSchema;
-import fu.berlin.apptap.database.AppTabDbSchema.EventsTable;
-import fu.berlin.apptap.database.AppTapDatabaseHelper;
+import java.util.Objects;
+
+import fu.berlin.apptap.data.AppTabDbSchema;
+import fu.berlin.apptap.data.AppTapDatabaseHelper;
 
 public class EventReceiverProvider extends ContentProvider {
 
@@ -43,7 +42,7 @@ public class EventReceiverProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mContext = getContext().getApplicationContext();
+        mContext = Objects.requireNonNull(getContext(), "EventReceiverProvider.getContext() returned null").getApplicationContext();
         mDatabase = new AppTapDatabaseHelper(mContext).getWritableDatabase();
         return false;
     }
@@ -54,35 +53,34 @@ public class EventReceiverProvider extends ContentProvider {
             debugLogEvent(bundle);
 
             ContentValues values = getContentValues(bundle);
-            mDatabase.insert(EventsTable.NAME, null, values);
+            mDatabase.insert(AppTabDbSchema.EventTable.NAME, null, values);
         }
         return null;
     }
 
     private static ContentValues getContentValues(Bundle bundle) {
         ContentValues values = new ContentValues();
-        values.put(EventsTable.Cols.APPID, bundle.getString(BUNDLE_KEY_APP_ID));
-        values.put(EventsTable.Cols.TIME, String.valueOf(bundle.getLong(BUNDLE_KEY_EVENT_TIMESTAMP)));
-        values.put(EventsTable.Cols.NAME, bundle.getString(BUNDLE_KEY_EVENT_NAME));
-        values.put(EventsTable.Cols.ORIGIN, bundle.getString(BUNDLE_KEY_EVENT_ORIGIN));
-        values.put(EventsTable.Cols.PARAMS, bundle.getBundle(BUNDLE_KEY_BUNDLE_ARG).toString());
+        values.put(AppTabDbSchema.EventTable.Cols.APPID, bundle.getString(BUNDLE_KEY_APP_ID));
+        values.put(AppTabDbSchema.EventTable.Cols.TIME, String.valueOf(bundle.getLong(BUNDLE_KEY_EVENT_TIMESTAMP)));
+        values.put(AppTabDbSchema.EventTable.Cols.NAME, bundle.getString(BUNDLE_KEY_EVENT_NAME));
+        values.put(AppTabDbSchema.EventTable.Cols.ORIGIN, bundle.getString(BUNDLE_KEY_EVENT_ORIGIN));
+        values.put(AppTabDbSchema.EventTable.Cols.PARAMS, bundle.getBundle(BUNDLE_KEY_BUNDLE_ARG).toString());
         return values;
     }
 
     private void debugLogEvent(Bundle bundle) {
-        StringBuilder eventLogStringBuilder = new StringBuilder();
-        eventLogStringBuilder.append("Event received: Event{appID='");
-        eventLogStringBuilder.append(bundle.getString(BUNDLE_KEY_APP_ID));
-        eventLogStringBuilder.append("', name='");
-        eventLogStringBuilder.append(bundle.getString(BUNDLE_KEY_EVENT_NAME));
-        eventLogStringBuilder.append("', origin='");
-        eventLogStringBuilder.append(bundle.getString(BUNDLE_KEY_EVENT_ORIGIN));
-        eventLogStringBuilder.append("', time='");
-        eventLogStringBuilder.append(bundle.getLong(BUNDLE_KEY_EVENT_TIMESTAMP));
-        eventLogStringBuilder.append("', params=");
-        eventLogStringBuilder.append(unpackBundle(bundle.getBundle(BUNDLE_KEY_BUNDLE_ARG)).toString());
-        eventLogStringBuilder.append("}");
-        Log.d(LOG_TAG, eventLogStringBuilder.toString());
+        String eventLogStringBuilder = "Event received: Event{appID='" +
+                bundle.getString(BUNDLE_KEY_APP_ID) +
+                "', name='" +
+                bundle.getString(BUNDLE_KEY_EVENT_NAME) +
+                "', origin='" +
+                bundle.getString(BUNDLE_KEY_EVENT_ORIGIN) +
+                "', time='" +
+                bundle.getLong(BUNDLE_KEY_EVENT_TIMESTAMP) +
+                "', params=" +
+                unpackBundle(bundle.getBundle(BUNDLE_KEY_BUNDLE_ARG)).toString() +
+                "}";
+        Log.d(LOG_TAG, eventLogStringBuilder);
     }
 
     public Bundle unpackBundle(Bundle bundle) {
@@ -92,7 +90,7 @@ public class EventReceiverProvider extends ContentProvider {
             for (String key :
                     unpackedBundle.keySet()) {
                 Object value = unpackedBundle.get(key);
-                if (value != null && value instanceof Bundle) {
+                if (value instanceof Bundle) {
                     unpackedBundle.putBundle(key, unpackBundle((Bundle) value));
                 }
             }

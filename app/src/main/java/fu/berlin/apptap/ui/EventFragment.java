@@ -2,21 +2,18 @@ package fu.berlin.apptap.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import fu.berlin.apptap.R;
-import fu.berlin.apptap.ui.dummy.DummyContent;
-import fu.berlin.apptap.ui.dummy.DummyContent.DummyItem;
-
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import fu.berlin.apptap.R;
+import fu.berlin.apptap.model.Event;
+import fu.berlin.apptap.model.EventStash;
 
 /**
  * A fragment representing a list of Items.
@@ -26,11 +23,9 @@ import java.util.List;
  */
 public class EventFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView mEventRecyclerView;
+    private MyEventRecyclerViewAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,23 +34,10 @@ public class EventFragment extends Fragment {
     public EventFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static EventFragment newInstance(int columnCount) {
-        EventFragment fragment = new EventFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -63,18 +45,18 @@ public class EventFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyEventRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+        mEventRecyclerView = view.findViewById(R.id.events_recycler_view);
+        mEventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        updateUI();
+
         return view;
+    }
+
+    private void updateUI() {
+        List<Event> events = EventStash.getInstance(getActivity()).getEvents();
+        mAdapter = new MyEventRecyclerViewAdapter(events, mListener);
+        mEventRecyclerView.setAdapter(mAdapter);
     }
 
 
@@ -107,6 +89,6 @@ public class EventFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Event event);
     }
 }

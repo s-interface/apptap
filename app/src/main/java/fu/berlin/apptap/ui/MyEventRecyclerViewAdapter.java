@@ -8,72 +8,72 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import fu.berlin.apptap.R;
+import fu.berlin.apptap.model.Event;
 import fu.berlin.apptap.ui.EventFragment.OnListFragmentInteractionListener;
-import fu.berlin.apptap.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Event} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
-public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecyclerViewAdapter.ViewHolder> {
+public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecyclerViewAdapter.EventListRowViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Event> mEventList;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyEventRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    MyEventRecyclerViewAdapter(List<Event> events, OnListFragmentInteractionListener listener) {
+        mEventList = events;
         mListener = listener;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EventListRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_event, parent, false);
-        return new ViewHolder(view);
+        return new EventListRowViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+    public void onBindViewHolder(final EventListRowViewHolder holder, int position) {
+        final Event event = mEventList.get(position);
+        holder.bind(event);
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mEventList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+    public class EventListRowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final View mView;
+        private final TextView mNameTextView;
+        private final TextView mContentTextView;
+        private Event mEvent;
 
-        public ViewHolder(View view) {
+        public EventListRowViewHolder(View view) {
             super(view);
+            itemView.setOnClickListener(this);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mNameTextView = view.findViewById(R.id.event_name);
+            mContentTextView = view.findViewById(R.id.event_content);
+        }
+
+        public void bind(Event event) {
+            mEvent = event;
+            mNameTextView.setText(mEvent.getName());
+            mContentTextView.setText(mEvent.getAppId());
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onListFragmentInteraction(mEvent);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mNameTextView.getText() + "'";
         }
     }
 }

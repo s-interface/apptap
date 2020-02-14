@@ -1,11 +1,11 @@
-package fu.berlin.apptap.database;
+package fu.berlin.apptap.data;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import fu.berlin.apptap.database.AppTabDbSchema.EventsTable;
+import fu.berlin.apptap.data.AppTabDbSchema.EventTable;
 
 public class AppTapDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
@@ -28,14 +28,14 @@ public class AppTapDatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + EventsTable.NAME + "(" +
+        db.execSQL("create table " + EventTable.NAME + "(" +
                 " _id integer primary key autoincrement, " +
-//                EventsTable.Cols.UUID + ", " +
-                EventsTable.Cols.APPID + ", " +
-                EventsTable.Cols.TIME + ", " +
-                EventsTable.Cols.NAME + ", " +
-                EventsTable.Cols.ORIGIN + ", " +
-                EventsTable.Cols.PARAMS +
+//                EventTable.Cols.UUID + ", " +
+                EventTable.Cols.APPID + ", " +
+                EventTable.Cols.TIME + ", " +
+                EventTable.Cols.NAME + ", " +
+                EventTable.Cols.ORIGIN + ", " +
+                EventTable.Cols.PARAMS +
                 ")"
         );
     }
@@ -63,20 +63,5 @@ public class AppTapDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-    }
-
-    public static Cursor queryEvents(Context context, String whereClause, String[] whereArgs) {
-        SQLiteDatabase database = new AppTapDatabaseHelper(context.getApplicationContext()).getReadableDatabase();
-        Cursor cursor = database.query(
-                EventsTable.NAME,
-                null, // columns - null selects all columns
-                whereClause,
-                whereArgs,
-                null, // groupBy
-                null, // having
-                null // orderBy
-        );
-
-        return cursor;
     }
 }

@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.EventListActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context=".ui.EventBrowserActivity"
+    tools:showIn="@layout/activity_event_browser">
 
     <fragment
         android:id="@+id/event_fragment"
         android:name="fu.berlin.apptap.ui.EventFragment"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
