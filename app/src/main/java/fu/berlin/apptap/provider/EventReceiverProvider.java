@@ -69,7 +69,7 @@ public class EventReceiverProvider extends ContentProvider {
     }
 
     private void debugLogEvent(Bundle bundle) {
-        String eventLogStringBuilder = "Event received: Event{appID='" +
+        String eventLogString = "Event received: Event{appID='" +
                 bundle.getString(BUNDLE_KEY_APP_ID) +
                 "', name='" +
                 bundle.getString(BUNDLE_KEY_EVENT_NAME) +
@@ -80,7 +80,7 @@ public class EventReceiverProvider extends ContentProvider {
                 "', params=" +
                 unpackBundle(bundle.getBundle(BUNDLE_KEY_BUNDLE_ARG)).toString() +
                 "}";
-        Log.d(LOG_TAG, eventLogStringBuilder);
+        Log.d(LOG_TAG, eventLogString);
     }
 
     public Bundle unpackBundle(Bundle bundle) {

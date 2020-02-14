@@ -10,10 +10,12 @@ import androidx.appcompat.widget.Toolbar;
 import fu.berlin.apptap.R;
 import fu.berlin.apptap.model.Event;
 import fu.berlin.apptap.model.EventStash;
+import fu.berlin.apptap.util.Utillity;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class EventBrowserActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
@@ -60,7 +62,24 @@ public class EventBrowserActivity extends AppCompatActivity implements EventFrag
 
     @Override
     public void onListFragmentInteraction(Event event) {
-        Toast toast = Toast.makeText(this, "click: " + event.getName(), Toast.LENGTH_SHORT);
-        toast.show();
+//        Toast toast = Toast.makeText(this, "click: " + event.getName(), Toast.LENGTH_SHORT);
+//        toast.show();
+        String eventString = "appID='" +
+                event.getAppId() +
+                "', name='" +
+                event.getName() +
+                "', origin='" +
+                event.getOrigin() +
+                "', time='" +
+                Utillity.getDateTimeFromTimestamp(event.getTime(), null) +
+                "', params=" +
+                event.getParams();
+        View view = findViewById(R.id.view_main_coordinator);
+        Snackbar snackbar = Snackbar.make(view, eventString, 6000)
+                .setAction("Action", null);
+        View snackbarView = snackbar.getView();
+        TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setMaxLines(5);
+        snackbar.show();
     }
 }

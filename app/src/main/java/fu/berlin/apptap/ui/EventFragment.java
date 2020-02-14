@@ -75,6 +75,12 @@ public class EventFragment extends Fragment {
         mEventRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "EventFragment: onResume()");
+        updateUI();
+    }
 
     @Override
     public void onAttach(Context context) {

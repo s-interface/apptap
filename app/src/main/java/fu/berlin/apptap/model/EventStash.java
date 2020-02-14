@@ -59,9 +59,7 @@ public class EventStash {
     private static ContentValues getContentValues(Event event) {
         ContentValues values = new ContentValues();
         values.put(EventTable.Cols.NAME, event.getName());
-//        values.put(CrimeTable.Cols.TITLE, event.getTitle());
-//        values.put(CrimeTable.Cols.DATE, event.getDate().getTime());
-//        values.put(CrimeTable.Cols.SOLVED, event.isSolved() ? 1 : 0);
+        values.put(EventTable.Cols.APPID, event.getAppId());
         return values;
     }
 

@@ -10,14 +10,18 @@ import android.widget.TextView;
 import fu.berlin.apptap.R;
 import fu.berlin.apptap.model.Event;
 import fu.berlin.apptap.ui.EventFragment.OnListFragmentInteractionListener;
+import fu.berlin.apptap.util.Utillity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Event} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecyclerViewAdapter.EventListRowViewHolder> {
+public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecyclerViewAdapter.EventViewHolder> {
 
     private final List<Event> mEventList;
     private final OnListFragmentInteractionListener mListener;
@@ -27,15 +31,17 @@ public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecy
         mListener = listener;
     }
 
+    //Called when creating a ViewHolder instance
     @Override
-    public EventListRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_event, parent, false);
-        return new EventListRowViewHolder(view);
+        return new EventViewHolder(view);
     }
 
+    //Called when binding a ViewHolder instance to data
     @Override
-    public void onBindViewHolder(final EventListRowViewHolder holder, int position) {
+    public void onBindViewHolder(final EventViewHolder holder, int position) {
         final Event event = mEventList.get(position);
         holder.bind(event);
     }
@@ -45,24 +51,24 @@ public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecy
         return mEventList.size();
     }
 
-    public class EventListRowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final View mView;
+        private final TextView mTimeTextView;
         private final TextView mNameTextView;
-        private final TextView mContentTextView;
         private Event mEvent;
 
-        public EventListRowViewHolder(View view) {
+        public EventViewHolder(View view) {
             super(view);
             itemView.setOnClickListener(this);
             mView = view;
+            mTimeTextView = view.findViewById(R.id.event_time);
             mNameTextView = view.findViewById(R.id.event_name);
-            mContentTextView = view.findViewById(R.id.event_content);
         }
 
         public void bind(Event event) {
             mEvent = event;
+            mTimeTextView.setText(Utillity.getDateTimeFromTimestamp(event.getTime(), null));
             mNameTextView.setText(mEvent.getName());
-            mContentTextView.setText(mEvent.getAppId());
 
         }
 
@@ -73,7 +79,7 @@ public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecy
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mNameTextView.getText() + "'";
+            return super.toString() + " '" + mTimeTextView.getText() + "'";
         }
     }
 }

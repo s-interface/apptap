@@ -15,12 +15,18 @@ public class EventCursorWrapper extends CursorWrapper {
 
     public Event getEvent() {
 
-        String name = getString(getColumnIndex(EventTable.Cols.NAME));
         String appId = getString(getColumnIndex(EventTable.Cols.APPID));
+        String eventTime = getString(getColumnIndex(EventTable.Cols.TIME));
+        String eventName = getString(getColumnIndex(EventTable.Cols.NAME));
+        String eventOrigin = getString(getColumnIndex(EventTable.Cols.ORIGIN));
+        String eventParams = getString(getColumnIndex(EventTable.Cols.PARAMS));
 
         Event event = new Event();
-        event.setName(name);
         event.setAppId(appId);
+        event.setTime(eventTime);
+        event.setName(eventName);
+        event.setOrigin(eventOrigin);
+        event.setParams(eventParams);
 
         return event;
     }
