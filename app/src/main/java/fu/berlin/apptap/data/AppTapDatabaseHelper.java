@@ -11,6 +11,8 @@ public class AppTapDatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "events.db";
 
+    public static final String ORDER_DESCENDING = "_id DESC";
+
     /**
      * Create a helper object to create, open, and/or manage a database.
      *

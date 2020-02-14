@@ -2,6 +2,7 @@ package fu.berlin.apptap.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,12 @@ import java.util.List;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import fu.berlin.apptap.R;
 import fu.berlin.apptap.model.Event;
 import fu.berlin.apptap.model.EventStash;
+
+import static fu.berlin.apptap.provider.EventReceiverProvider.LOG_TAG;
 
 /**
  * A fragment representing a list of Items.
@@ -26,6 +30,7 @@ public class EventFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView mEventRecyclerView;
     private MyEventRecyclerViewAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -37,7 +42,6 @@ public class EventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -48,12 +52,24 @@ public class EventFragment extends Fragment {
         mEventRecyclerView = view.findViewById(R.id.events_recycler_view);
         mEventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
+
+                updateUI();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         updateUI();
 
         return view;
     }
 
     private void updateUI() {
+        Log.d(LOG_TAG, "updateUI called from EventFragment");
         List<Event> events = EventStash.getInstance(getActivity()).getEvents();
         mAdapter = new MyEventRecyclerViewAdapter(events, mListener);
         mEventRecyclerView.setAdapter(mAdapter);

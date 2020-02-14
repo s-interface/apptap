@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.UUID;
 import fu.berlin.apptap.data.AppTapDatabaseHelper;
 import fu.berlin.apptap.data.EventCursorWrapper;
 
-import static fu.berlin.apptap.data.AppTabDbSchema.*;
+import static fu.berlin.apptap.data.AppTabDbSchema.EventTable;
 
 public class EventStash {
     private static EventStash sEventStashInstance;
@@ -40,16 +39,13 @@ public class EventStash {
     public List<Event> getEvents() {
         List<Event> events = new ArrayList<>();
 
-        try (EventCursorWrapper cursor = queryEvents(null, null)) {
+        try (EventCursorWrapper cursor = queryEvents(null, null, AppTapDatabaseHelper.ORDER_DESCENDING)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 events.add(cursor.getEvent());
                 cursor.moveToNext();
-                Log.d("AppTap", "cursor_inloop: " + cursor.getPosition());
             }
         }
-
-        Log.d("AppTap", "events.size(): " + events.size());
 
         return events;
     }
@@ -69,7 +65,7 @@ public class EventStash {
         return values;
     }
 
-    private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs) {
+    private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs, String orderBy) {
         Cursor cursor = mDatabase.query(
                 EventTable.NAME,
                 null, // columns - null selects all columns
@@ -77,7 +73,7 @@ public class EventStash {
                 whereArgs,
                 null, // groupBy
                 null, // having
-                null // orderBy
+                orderBy // orderBy
         );
 
         return new EventCursorWrapper(cursor);
