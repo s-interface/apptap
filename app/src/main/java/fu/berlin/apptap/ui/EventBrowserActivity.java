@@ -16,9 +16,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class EventBrowserActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
+public class EventBrowserActivity extends AppCompatActivity implements EventListFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

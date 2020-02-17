@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import fu.berlin.apptap.R;
 import fu.berlin.apptap.model.Event;
 import fu.berlin.apptap.model.EventStash;
+import fu.berlin.apptap.util.Utillity;
 
 import static fu.berlin.apptap.provider.EventReceiverProvider.LOG_TAG;
 
@@ -25,18 +27,18 @@ import static fu.berlin.apptap.provider.EventReceiverProvider.LOG_TAG;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class EventFragment extends Fragment {
+public class EventListFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
     private RecyclerView mEventRecyclerView;
-    private MyEventRecyclerViewAdapter mAdapter;
+    private EventAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public EventFragment() {
+    public EventListFragment() {
     }
 
     @Override
@@ -56,7 +58,6 @@ public class EventFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
 
                 updateUI();
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -69,16 +70,14 @@ public class EventFragment extends Fragment {
     }
 
     private void updateUI() {
-        Log.d(LOG_TAG, "updateUI called from EventFragment");
         List<Event> events = EventStash.getInstance(getActivity()).getEvents();
-        mAdapter = new MyEventRecyclerViewAdapter(events, mListener);
+        mAdapter = new EventAdapter(events);
         mEventRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOG_TAG, "EventFragment: onResume()");
         updateUI();
     }
 
@@ -97,6 +96,62 @@ public class EventFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private Event mEvent;
+
+        private final TextView mTimeTextView;
+        private final TextView mNameTextView;
+
+        public EventViewHolder(View view) {
+            super(view);
+            itemView.setOnClickListener(this);
+
+            mTimeTextView = view.findViewById(R.id.event_time);
+            mNameTextView = view.findViewById(R.id.event_name);
+        }
+
+        public void bind(Event event) {
+            mEvent = event;
+            mTimeTextView.setText(Utillity.getDateTimeFromTimestamp(event.getTime(), null));
+            mNameTextView.setText(mEvent.getName());
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onListFragmentInteraction(mEvent);
+        }
+    }
+
+    private class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
+
+        private final List<Event> mEventList;
+
+        EventAdapter(List<Event> events) {
+            mEventList = events;
+        }
+
+        //Called when creating a ViewHolder instance
+        @Override
+        public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_event, parent, false);
+            return new EventViewHolder(view);
+        }
+
+        //Called when binding a ViewHolder instance to data
+        @Override
+        public void onBindViewHolder(final EventViewHolder holder, int position) {
+            final Event event = mEventList.get(position);
+            holder.bind(event);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mEventList.size();
+        }
+
     }
 
     /**
