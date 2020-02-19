@@ -2,7 +2,6 @@ package fu.berlin.apptap.data;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.util.Log;
 
 import fu.berlin.apptap.model.Event;
 
@@ -15,13 +14,14 @@ public class EventCursorWrapper extends CursorWrapper {
 
     public Event getEvent() {
 
+        int event_index_id = getInt(getColumnIndex(EventTable.Cols.INDEX_ID));
         String appId = getString(getColumnIndex(EventTable.Cols.APPID));
         String eventTime = getString(getColumnIndex(EventTable.Cols.TIME));
         String eventName = getString(getColumnIndex(EventTable.Cols.NAME));
         String eventOrigin = getString(getColumnIndex(EventTable.Cols.ORIGIN));
         String eventParams = getString(getColumnIndex(EventTable.Cols.PARAMS));
 
-        Event event = new Event();
+        Event event = new Event(event_index_id);
         event.setAppId(appId);
         event.setTime(eventTime);
         event.setName(eventName);

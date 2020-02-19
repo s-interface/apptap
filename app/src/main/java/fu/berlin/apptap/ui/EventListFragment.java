@@ -120,7 +120,7 @@ public class EventListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mListener.onListFragmentInteraction(mEvent);
+            mListener.onListFragmentInteraction(mEvent.getEventId());
         }
     }
 
@@ -166,6 +166,6 @@ public class EventListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Event event);
+        void onListFragmentInteraction(int eventID);
     }
 }

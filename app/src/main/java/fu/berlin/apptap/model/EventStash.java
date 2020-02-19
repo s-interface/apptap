@@ -50,9 +50,15 @@ public class EventStash {
         return events;
     }
 
-    public Event getEvent(UUID uuid) {
+    public Event getEvent(int eventId) {
 
-        return null;
+        try (EventCursorWrapper cursor = queryEvents(EventTable.Cols.INDEX_ID + " = ?", new String[]{Integer.toString(eventId)}, null)) {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getEvent();
+        }
     }
 
     //toDo: define correct values

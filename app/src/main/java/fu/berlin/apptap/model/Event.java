@@ -3,22 +3,22 @@ package fu.berlin.apptap.model;
 import java.util.UUID;
 
 public class Event {
-    private UUID mEventId;
+    private int mEventId;
     private String mAppId;
     private String mTime;
     private String mName;
     private String mOrigin;
     private String mParams;
 
-    public Event() {
-        this(UUID.randomUUID());
+//    public Event() {
+//        this(UUID.randomUUID());
+//    }
+
+    public Event(int index_id) {
+        mEventId = index_id;
     }
 
-    public Event(UUID uuid) {
-        mEventId = uuid;
-    }
-
-    public UUID getEventId() {
+    public int getEventId() {
         return mEventId;
     }
 
