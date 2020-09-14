@@ -34,6 +34,9 @@ public class EventListFragment extends Fragment {
     private EventAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    public static final String LOG_TAG = "AppTap";
+
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -130,6 +133,7 @@ public class EventListFragment extends Fragment {
 
         EventAdapter(List<Event> events) {
             mEventList = events;
+            Log.d(LOG_TAG, "EVENT SIZE: " + events.size());
         }
 
         //Called when creating a ViewHolder instance
